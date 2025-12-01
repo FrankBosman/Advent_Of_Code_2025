@@ -1,53 +1,70 @@
-use std::collections::HashMap;
-
 advent_of_code::solution!(1);
 
-// Example from 2024 day 1
 pub fn part_one(input: &str) -> Option<u32> {
-    // Parse the input
+    let mut times_zero = 0;
+    let mut counter = 50;
+    let max = 100;
+
     let lines = input.trim().lines();
-    let (mut list1, mut list2) = (Vec::new(), Vec::new());
     for line in lines {
-        let line = line.trim();
-        let (part1, part2) = line.split_once("   ").unwrap();
-        list1.push(part1.parse::<u32>().unwrap());
-        list2.push(part2.parse::<u32>().unwrap());
-    }
+        let first_char = line.get(0..1)?;
+        let remainder = line.get(1..)?;
+        let steps = remainder.parse::<i32>().ok()?;
 
-    // Sort the lists
-    list1.sort_unstable();
-    list2.sort_unstable();
+        counter = match first_char {
+            "L" => (counter - steps) % max,
+            "R" => (counter + steps) % max,
+            _ => {
+                panic!("Invalid first char: {}", first_char);
+            }
+        };
 
-    // Sum up the differences
-    let mut total = 0;
-    for (part1, part2) in list1.iter().zip(list2.iter()) {
-        total += part1.abs_diff(*part2);
+        if counter == 0 {
+            times_zero += 1;
+        }
     }
-    Some(total)
+    Some(times_zero)
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    // Parse the input
+    let mut times_zero: i32 = 0;
+    let mut current: i32 = 50;
+    let max = 100;
+
     let lines = input.trim().lines();
-    let mut map1: HashMap<u32, u32> = HashMap::new();
-    let mut map2: HashMap<u32, u32> = HashMap::new();
     for line in lines {
-        let line = line.trim();
-        let (part1, part2) = line.split_once("   ").unwrap();
-        let (num1, num2) = (part1.parse::<u32>().unwrap(), part2.parse::<u32>().unwrap());
+        let first_char = line.get(0..1)?;
+        let remainder = line.get(1..)?;
+        let steps = remainder.parse::<i32>().ok()?;
 
-        *map1.entry(num1).or_default() += 1u32;
-        *map2.entry(num2).or_default() += 1u32;
+        match first_char {
+            "R" => {
+                let current_boundaries = floor_div(current, max);
+                current -= steps;
+                let new_boundaries = floor_div(current, max);
+
+                // Calculate how many "100 boundaries" we crossed going up
+                times_zero += new_boundaries - current_boundaries;
+            },
+            "L" => {
+                let current_boundaries = floor_div(current - 1, max);
+                current -= steps;
+                let new_boundaries = floor_div(current - 1, max);
+
+                // Calculate how many "100 boundaries" we crossed going down, first 0 doesn't count
+                times_zero += current_boundaries - new_boundaries;
+            },
+            _ => panic!("Invalid char"),
+        };
     }
 
-    let mut total = 0;
-    for (num, count) in map1.iter() {
-        if let Some(count2) = map2.get(num) {
-            total += num * count * count2;
-        }
-    }
+    Some(times_zero as u32)
+}
 
-    Some(total)
+fn floor_div(val: i32, div: i32) -> i32 {
+    let result = val / div;
+    let remainder = val % div;
+    if remainder < 0 { result - 1 } else { result }
 }
 
 #[cfg(test)]
@@ -57,12 +74,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let result = part_one(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(11));
+        assert_eq!(result, Some(3));
     }
 
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, Some(31));
+        assert_eq!(result, Some(6));
     }
 }

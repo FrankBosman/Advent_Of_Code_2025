@@ -1,7 +1,7 @@
 <div align=center>
 <img src="./.assets/christmas_ferris.png" width="164">
 
-# 🎄 Advent of Code 2024
+# 🎄 Advent of Code 2025
 Solutions for [Advent of Code](https://adventofcode.com/) in [Rust](https://www.rust-lang.org/), Made by Frank Bosman.<br>
 Thanks to Felix Spöttel for the [template](https://github.com/fspoettel/advent-of-code-rust) of this repo.
 </div>
@@ -14,8 +14,12 @@ Generated automatically
 
 <!--- benchmarking table --->
 ## Benchmarks
-Generated automatically
 
+| Day | Part 1 | Part 2 |
+| :---: | :---: | :---:  |
+| [Day 1](./src/bin/01.rs) | `112.5µs` | `118.6µs` |
+
+**Total: 0.23ms**
 <!--- benchmarking table --->
 
 ---
