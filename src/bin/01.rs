@@ -38,33 +38,27 @@ pub fn part_two(input: &str) -> Option<u32> {
         let steps = remainder.parse::<i32>().ok()?;
 
         match first_char {
-            "R" => {
-                let current_boundaries = floor_div(current, max);
-                current -= steps;
-                let new_boundaries = floor_div(current, max);
-
-                // Calculate how many "100 boundaries" we crossed going up
-                times_zero += new_boundaries - current_boundaries;
-            },
             "L" => {
-                let current_boundaries = floor_div(current - 1, max);
+                let current_boundaries = i32::div_euclid(current - 1, max);
                 current -= steps;
-                let new_boundaries = floor_div(current - 1, max);
+                let new_boundaries =  i32::div_euclid(current - 1, max);
 
                 // Calculate how many "100 boundaries" we crossed going down, first 0 doesn't count
                 times_zero += current_boundaries - new_boundaries;
+            },
+            "R" => {
+                let current_boundaries = i32::div_euclid(current, max);
+                current += steps;
+                let new_boundaries = i32::div_euclid(current, max);
+
+                // Calculate how many "100 boundaries" we crossed going up
+                times_zero += new_boundaries - current_boundaries;
             },
             _ => panic!("Invalid char"),
         };
     }
 
     Some(times_zero as u32)
-}
-
-fn floor_div(val: i32, div: i32) -> i32 {
-    let result = val / div;
-    let remainder = val % div;
-    if remainder < 0 { result - 1 } else { result }
 }
 
 #[cfg(test)]
