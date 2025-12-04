@@ -41,8 +41,8 @@ impl PointU32 {
     pub fn get_neighbours(&self, size: &PointU32, diagonal: bool) -> Vec<PointU32> {
         let directions=  if diagonal {
             let mut temp = Vec::with_capacity(8);
-            for x in [-1, 1] {
-                for y in [-1, 1] {
+            for x in -1..=1 {
+                for y in -1..=1 {
                     if x == 0 && y == 0 { continue; }
                     temp.push(Point::new(x, y));
                 }
